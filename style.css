@@ -1,8 +1,0 @@
-@import url("Calendar/Calendar.css");
-@import "TodoList/TodoList.css";
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}

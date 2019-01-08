@@ -1,3 +1,7 @@
+const { getDayKey } = require('../Common.js');
+
+console.log('hello!');
+
 // Component TodoList Constructor
 class TodoList {
   constructor( currentDay ) {
@@ -116,3 +120,5 @@ class TodoList {
     return todoEl;
   }
 }
+
+module.exports = TodoList;

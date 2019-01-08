@@ -1,3 +1,5 @@
+const getDayKey = require('../Common.js').getDayKey;
+
 // Component Calendar Constructor
 function Calendar({startMonth, startYear, clickDayHandler}) {
     let startDay = new Date(startYear, startMonth, 1),
@@ -152,3 +154,5 @@ function Calendar({startMonth, startYear, clickDayHandler}) {
       shiftMonth
     }
 }
+
+module.exports = Calendar;

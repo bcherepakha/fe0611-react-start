@@ -1,5 +1,8 @@
 console.clear();
 
+const Calendar = require('./Calendar/Calendar'),
+    TodoList = require('./TodoList/TodoList');
+
 // Global variables
 const currentDay = new Date(),
       currentMonth = currentDay.getMonth(),
@@ -14,14 +17,6 @@ const currentDay = new Date(),
 
 function showTodoList( day ) {
   todoComponent.setCurrentDay( day );
-}
-
-function getDayKey( dayObj ) {
-  return [
-    dayObj.getFullYear(),
-    (dayObj.getMonth() + '1').padStart(2, '0'),
-    dayObj.getDate()
-  ].join('-');
 }
 
 // todoComponent.setState({data: []}); // clean data
