@@ -1,0 +1,126 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.calendar {
+    display: block;
+    width: 280px;
+    margin: 20px auto;
+}
+
+.calendar ul {
+    box-sizing: content-box;
+    width: 100%;
+    color: #444;
+    font-size: 0;
+}
+
+.calendar-weekdays {
+    border: 1px solid;
+}
+
+.calendar-weekdays li {
+    background-color: #d3fd02;
+    font-weight: bold;
+}
+
+.calendar-weekdays li+li {
+    border-left: 1px solid;
+}
+
+.calendar ul li {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    font-size: 14px;
+    line-height: 40px;
+}
+
+.calendar-days {
+    border: 1px solid;
+    border-top: 0;
+    border-bottom: 0;
+}
+
+.calendar-days li {
+    border-bottom: 1px solid;
+    border-left: 1px solid;
+    background-color: #fff;
+}
+
+.calendar-days li.not-in-month
+{
+  background-color: #bababa;
+}
+
+.calendar-days li:nth-child(7n+1) {
+    border-left: 0;
+}
+
+.calendar-controls {
+    display: flex;
+    justify-content: space-between;
+    line-height: 2.8em;
+}
+
+.calendar__prev-month,
+.calendar__next-month {
+    text-decoration: none;
+}
+
+.calendar__prev-month:hover,
+.calendar__next-month:hover {
+    color: #096;
+}
+
+.todo {
+    position: fixed;
+    display: flex;
+    align-items: strech;
+    flex-direction: column;
+
+    width: 50%;
+    max-width: 600px;
+    margin: 0;
+    right: 20px;
+    bottom: 20px;
+    border: 1px solid #ffc300;
+    background: #fff;
+}
+
+.todo__banner {
+    display: block;
+
+    margin: 0 0 20px;
+    padding: 20px;
+
+    text-align: center;
+
+    color: #476085;
+    background: #ffc300;
+}
+
+.todo__form {
+    display: flex;
+
+    margin: 20px;
+}
+
+.todo__form-input {
+    flex: 1 1;
+}
+
+.todo__form-add {
+    flex: 0 0 80px;
+
+    margin-left: 20px;
+}
+
+.todo__list
+{
+  padding: 0;
+  margin: 0 20px 0 40px;
+}
