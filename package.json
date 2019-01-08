@@ -4,8 +4,12 @@
   "description": "Simple Calendar with Todo",
   "main": "index.js",
   "scripts": {
+    "devServer": "npx browser-sync start --server --tunnel --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "browser-sync": "^2.26.3"
+  }
 }
