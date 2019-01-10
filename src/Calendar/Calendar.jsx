@@ -1,60 +1,169 @@
 import React from 'react';
 
+import './Calendar.css';
+
+export const WEEKDAYS_NAMES = [
+    'пн',
+    'вт',
+    'ср',
+    'чт',
+    'пт',
+    'сб',
+    'вс'
+];
+
+export const MONTH_NAMES = [
+    'Январь',
+    'Февраль',
+    'Март',
+    'Апрель',
+    'Май',
+    'Июнь',
+    'Июль',
+    'Август',
+    'Сентябрь',
+    'Октябрь',
+    'Ноябрь',
+    'Декабрь'
+];
+
 class Calendar extends React.Component {
+    static defaultPropps = {
+        holidays: []
+    }
+
+    static getMonthDays( year, month ) {
+        const firstDayInMonth = new Date(year, month, 1),
+           firstWeekDayInMonth = (6 + firstDayInMonth.getDay())%7,
+           lastDayInMont = new Date(year, month + 1, 0),
+           lastWeekDayInMont = lastDayInMont.getDay() === 0
+              ? 6
+              : lastDayInMont.getDay() - 1,
+           startDay = new Date(year, month, 1 - firstWeekDayInMonth),
+           endDay = new Date(year, month + 1, 6 - lastWeekDayInMont),
+           result = [];
+
+        for(
+          var currentDay = new Date(startDay);
+          currentDay <= endDay;
+          currentDay.setDate(currentDay.getDate() + 1)
+        ) {
+          result.push( new Date(currentDay) );
+        }
+
+        return {
+          firstDayInMonth,
+          lastDayInMont,
+          firstWeekDayInMonth,
+          lastWeekDayInMont,
+          startDay,
+          endDay,
+          daysList: result
+        };
+    }
+
+    constructor(props) {
+        super(props);
+
+        const {startYear, startMonth} = props,
+            startDay = new Date(startYear, startMonth, 1);
+
+        this.state = {
+            currentMonth: startDay.getMonth(),
+            currentYear: startDay.getFullYear()
+        };
+
+        // this.createDayElHandler = this.createDayEl.bind(this);
+    }
+
+    getHoliday(renderDate) {
+        const {holidays} = this.props;
+
+        return holidays.find(({day}) => +day === +renderDate);
+    }
+
+    createDayEl = renderDate => {
+        const {currentMonth} = this.state,
+            {currentDay} = this.props,
+            holiday = this.getHoliday(renderDate);
+        let className = [];
+
+        if (renderDate.getMonth() !== currentMonth) {
+            className.push('not-in-month');
+        }
+
+        if (holiday) {
+            className.push('holiday');
+        }
+
+        if (+currentDay === +renderDate) {
+            className.push('current-day');
+        }
+
+        return <li
+            key={renderDate.toString()}
+            className={className.join(' ')}>
+          {renderDate.getDate()}
+        </li>;
+    }
+
+    goPrevMonth = e => {
+        e.preventDefault();
+
+        this.shiftMonth(-1);
+    }
+
+    goNextMonth = e => {
+        e.preventDefault();
+
+        this.shiftMonth(1);
+    }
+
+    shiftMonth(shiftLength) {
+        // const {currentYear, currentMonth} = this.state,
+        //     startDay = new Date(currentYear, currentMonth + shiftLength, 1);
+        //
+        // this.setState({
+        //     currentMonth: startDay.getMonth(),
+        //     currentYear: startDay.getFullYear()
+        // });
+
+        this.setState(prevState => {
+            const {currentYear, currentMonth} = prevState,
+                startDay = new Date(currentYear, currentMonth + shiftLength, 1);
+
+            return {
+                currentMonth: startDay.getMonth(),
+                currentYear: startDay.getFullYear()
+            };
+        });
+    }
+
     render() {
+        const {currentMonth, currentYear} = this.state,
+            {daysList} = Calendar.getMonthDays(currentYear, currentMonth);
+
         return <div className="calendar">
             <div className="calendar-controls">
-                <a className="calendar__prev-month" href="#">&lt;</a>
+                <button
+                    onClick={this.goPrevMonth}
+                    className="calendar__prev-month">
+                    &lt;
+                </button>
                 <div className="calendar__title">
-                    Январь 2019
+                    {`${MONTH_NAMES[currentMonth]} ${currentYear}`}
                 </div>
-                <a className="calendar__next-month" href="#">&gt;</a>
+                <button
+                    onClick={this.goNextMonth}
+                    className="calendar__next-month">
+                    &gt;
+                </button>
             </div>
             <ul className="calendar-weekdays">
-                <li>пн</li>
-                <li>вт</li>
-                <li>ср</li>
-                <li>чт</li>
-                <li>пт</li>
-                <li>сб</li>
-                <li>вс</li>
+                {WEEKDAYS_NAMES.map(weekName => <li key={weekName}>{weekName}</li>)}
             </ul>
             <ul className="calendar-days">
-                <li className="not-in-month" data-day="2018-111-31">31</li>
-                <li data-day="2019-01-1">1</li>
-                <li data-day="2019-01-2">2</li>
-                <li data-day="2019-01-3">3</li>
-                <li data-day="2019-01-4">4</li>
-                <li data-day="2019-01-5">5</li>
-                <li data-day="2019-01-6">6</li>
-                <li data-day="2019-01-7">7</li>
-                <li data-day="2019-01-8">8</li>
-                <li data-day="2019-01-9">9</li>
-                <li data-day="2019-01-10">10</li>
-                <li data-day="2019-01-11">11</li>
-                <li data-day="2019-01-12">12</li>
-                <li data-day="2019-01-13">13</li>
-                <li data-day="2019-01-14">14</li>
-                <li data-day="2019-01-15">15</li>
-                <li data-day="2019-01-16">16</li>
-                <li data-day="2019-01-17">17</li>
-                <li data-day="2019-01-18">18</li>
-                <li data-day="2019-01-19">19</li>
-                <li data-day="2019-01-20">20</li>
-                <li data-day="2019-01-21">21</li>
-                <li data-day="2019-01-22">22</li>
-                <li data-day="2019-01-23">23</li>
-                <li data-day="2019-01-24">24</li>
-                <li data-day="2019-01-25">25</li>
-                <li data-day="2019-01-26">26</li>
-                <li data-day="2019-01-27">27</li>
-                <li data-day="2019-01-28">28</li>
-                <li data-day="2019-01-29">29</li>
-                <li data-day="2019-01-30">30</li>
-                <li data-day="2019-01-31">31</li>
-                <li className="not-in-month" data-day="2019-11-1">1</li>
-                <li className="not-in-month" data-day="2019-11-2">2</li>
-                <li className="not-in-month" data-day="2019-11-3">3</li>
+                {daysList.map(this.createDayEl)}
             </ul>
         </div>;
     }
