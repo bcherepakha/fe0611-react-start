@@ -64,14 +64,15 @@ class TodoList extends React.Component {
 
             newData.push({
                 id: new Date().toISOString(),
-                text: taskText
+                text: taskText,
+                isTaskDone: false
             });
 
             window.localStorage[currentStorageKey] = JSON.stringify(newData);
 
             return {
                 taskText: '',
-                data: newData
+                data: newData,
             }
         });
     }
@@ -84,18 +85,39 @@ class TodoList extends React.Component {
                 }
             });
     }
+    //
+
+    completeTask(taskData) {
+        return () =>
+          this.setState(prevState => {
+           let newData = {
+                id: taskData.id,
+                text: taskData.text,
+                isTaskDone: !taskData.isTaskDone
+              }
+        return {
+          data: prevState.data.filter(el => el !== taskData).concat(newData)
+        }
+      });
+    }
+
 
     renderListElement = (data = {}, index) => {
-        const {id, text = ''} = data;
+        const {id, text = '', isTaskDone} = data;
+        let classValue = isTaskDone ? 'todo__item-done' : 'todo__item'
 
-        return <li key={id || index} className='todo__item'>
+        return <li key={id || index} className={classValue}>
             {text}
+            <input type="checkbox" onChange={this.completeTask(data)} />
             <button onClick={this.deleteTask(data)}>Del</button>
         </li>;
     }
 
+
+  //
     render() {
         const {currentDayKey, data, taskText} = this.state;
+        console.log(data);
 
         return <div className="todo">
             <h3 className="todo__banner">
