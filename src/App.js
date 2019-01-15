@@ -34,10 +34,6 @@ function getHolidays(fullYear) {
 
 const HOLIDAYS = getHolidays(2019);
 
-// const Storage = {
-//     todoListDay
-// };
-//
 class App extends Component {
     constructor(props) {
         super(props);
@@ -52,28 +48,26 @@ class App extends Component {
         this.state = {
             currentDay,
             currentMonth: currentDay.getMonth(),
-            currentYear: currentDay.getFullYear(),
-            todoListDay: currentDay
-        }
+            currentYear: currentDay.getFullYear()
+        };
     }
 
-    changeTodoListDay = day => {
-        this.setState({
-            todoListDay: day
-        });
-    }
+    // changeTodoListDay = day => {
+    //     this.setState({
+    //         todoListDay: day
+    //     });
+    // }
 
     render() {
-        const {currentMonth, currentYear, currentDay, todoListDay} = this.state;
+        const {currentMonth, currentYear, currentDay} = this.state;
 
         return <React.Fragment>
             <Calendar
                 holidays={HOLIDAYS}
                 currentDay={currentDay}
                 startMonth={currentMonth}
-                startYear={currentYear}
-                clickByDayHandler={this.changeTodoListDay}/>
-            <TodoList currentDay={todoListDay}/>
+                startYear={currentYear}/>
+            <TodoList/>
         </React.Fragment>;
     }
 }

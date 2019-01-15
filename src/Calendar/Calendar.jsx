@@ -1,5 +1,10 @@
 import React from 'react';
 
+// import {Storage} from '../Flux/Storage';
+// import {MicroStorage} from '../Flux/Storage';
+
+import AppActions from '../Flux/AppActions';
+
 import './Calendar.css';
 
 export const WEEKDAYS_NAMES = [
@@ -120,6 +125,11 @@ class Calendar extends React.Component {
 
         if (clickByDayHandler) {
             clickByDayHandler(renderDate);
+        } else {
+            // Storage.todoListDay = renderDate;
+            // Storage.changeTodoListDay(renderDate);
+            // MicroStorage.changeTodoListDay(renderDate);
+            AppActions.changeTodoListDay(renderDate);
         }
     }
 

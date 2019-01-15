@@ -3,9 +3,14 @@ import PropTypes from 'prop-types';
 
 import './TodoList.css';
 
+// import {Storage} from '../Flux/Storage';
+// import {MicroStorage} from '../Flux/Storage';
+
+import AppStore from '../Flux/AppStore';
+
 class TodoList extends React.Component {
     static propTypes = {
-        currentDay: PropTypes.instanceOf(Date).isRequired
+        currentDay: PropTypes.instanceOf(Date)
     }
 
     static getDayKey( dayObj ) {
@@ -28,23 +33,51 @@ class TodoList extends React.Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        return TodoList.getCurrentDayParams(props.currentDay);
+        if (props.currentDay) {
+            return TodoList.getCurrentDayParams(props.currentDay);
+        }
+
+        return {};
     }
 
     constructor(props) {
         super(props);
 
         const {currentDay} = this.props;
+        // const {todoListDay} = Storage;
+        // const {todoListDay} = MicroStorage;
+        const {todoListDay} = AppStore;
 
         this.state = {
-            currentDay,
+            currentDay: currentDay || todoListDay,
             taskText: '',
             data: []
+        };
+
+        if (!currentDay) {
+            this.state = {
+                ...this.state,
+                ...TodoList.getCurrentDayParams(todoListDay)
+            };
         }
     }
 
     componentDidMount() {
         this.loadData();
+
+        if (!this.props.currentDay) {
+            // Storage.addEventListener('change', this.storageChanges);
+            // MicroStorage.bind('change', this.storageChanges);
+            AppStore.bind('change', this.storageChanges);
+        }
+    }
+
+    componentWillUnmount() {
+        if (!this.props.currentDay) {
+            // Storage.removeEventListener('change', this.storageChanges);
+            // MicroStorage.unbind('change', this.storageChanges);
+            AppStore.unbind('change', this.storageChanges);
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -70,6 +103,12 @@ class TodoList extends React.Component {
         this.setState({
             data
         });
+    }
+
+    storageChanges = () => {
+        // this.setState(TodoList.getCurrentDayParams(Storage.todoListDay));
+        // this.setState(TodoList.getCurrentDayParams(MicroStorage.todoListDay));
+        this.setState(TodoList.getCurrentDayParams(AppStore.todoListDay));
     }
 
     changeTaskText = e => {

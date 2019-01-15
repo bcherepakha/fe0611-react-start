@@ -10,9 +10,10 @@ iDispatcher.register(console.log);
 
 export default {
     iDispatcher,
-    eventName: function() {
+    changeTodoListDay: function(value) {
         iDispatcher.dispatch({
-            eventName: 'eventName'
+            eventName: 'change-todo-list-day',
+            todoListDay: value
         });
     }
 };
