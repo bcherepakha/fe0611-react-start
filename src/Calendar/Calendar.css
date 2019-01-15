@@ -43,6 +43,12 @@
     border-bottom: 1px solid;
     border-left: 1px solid;
     background-color: #fff;
+    cursor: pointer;
+}
+
+.calendar-days li:hover
+{
+    background: lightgray;
 }
 
 .calendar-days li.not-in-month

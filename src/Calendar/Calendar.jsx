@@ -102,9 +102,25 @@ class Calendar extends React.Component {
 
         return <li
             key={renderDate.toString()}
-            className={className.join(' ')}>
+            className={className.join(' ')}
+            onClick={this.clickByDay(renderDate)}>
           {renderDate.getDate()}
         </li>;
+    }
+
+    // () => 5
+    // function() { return 5; }
+    // () => ({key: 5})
+    // function() { return {key: 5}; }
+    // () => {key: 5} // not valid
+    // function() { key: 5 } // not valid
+
+    clickByDay = renderDate => () => {
+        const {clickByDayHandler} = this.props;
+
+        if (clickByDayHandler) {
+            clickByDayHandler(renderDate);
+        }
     }
 
     goPrevMonth = e => {

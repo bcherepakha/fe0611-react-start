@@ -46,3 +46,27 @@
   padding: 0;
   margin: 0 20px 0 40px;
 }
+
+.todo__item
+{
+    display: flex;
+    cursor: pointer;
+    justify-content: space-between;
+}
+
+.todo__item:hover
+{
+    background-color: lightgray;
+}
+
+.todo__item span
+{
+    display: block;
+    flex: 1 1 auto;
+}
+
+.todo__item--completed
+{
+    color: green;
+    text-decoration: line-through;
+}

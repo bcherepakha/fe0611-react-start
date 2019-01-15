@@ -16,6 +16,21 @@ class TodoList extends React.Component {
       ].join('-');
     }
 
+    static getCurrentDayParams(currentDay) {
+        const currentDayObj = new Date(currentDay),
+            currentDayKey = TodoList.getDayKey(currentDayObj),
+            currentStorageKey = `TODO_LIST_${currentDayKey}`;
+
+        return {
+            currentDayKey,
+            currentStorageKey
+        };
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        return TodoList.getCurrentDayParams(props.currentDay);
+    }
+
     constructor(props) {
         super(props);
 
@@ -23,15 +38,27 @@ class TodoList extends React.Component {
 
         this.state = {
             currentDay,
-            ...this.getCurrentDayParams(currentDay),
-            taskText: ''
+            taskText: '',
+            data: []
         }
     }
 
-    getCurrentDayParams(currentDay) {
-        const currentDayObj = new Date(currentDay),
-            currentDayKey = TodoList.getDayKey(currentDayObj),
-            currentStorageKey = `TODO_LIST_${currentDayKey}`;
+    componentDidMount() {
+        this.loadData();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.currentStorageKey !== this.state.currentStorageKey) {
+            this.loadData();
+        }
+
+        if (prevState.data !== this.state.data) {
+            this.saveTask();
+        }
+    }
+
+    loadData() {
+        const {currentStorageKey} = this.state;
         let data = [];
 
         try {
@@ -40,11 +67,9 @@ class TodoList extends React.Component {
             console.error(`can't parse data for ${currentStorageKey}`);
         }
 
-        return {
-            currentDayKey,
-            currentStorageKey,
+        this.setState({
             data
-        };
+        });
     }
 
     changeTaskText = e => {
@@ -59,15 +84,13 @@ class TodoList extends React.Component {
         e.preventDefault();
 
         this.setState(prevState => {
-            const {taskText, data, currentStorageKey} = this.state,
+            const {taskText, data} = this.state,
                 newData = [...data];
 
             newData.push({
                 id: new Date().toISOString(),
                 text: taskText
             });
-
-            window.localStorage[currentStorageKey] = JSON.stringify(newData);
 
             return {
                 taskText: '',
@@ -76,20 +99,55 @@ class TodoList extends React.Component {
         });
     }
 
-    deleteTask(taskData) {
-        return () =>
+    saveTask() {
+        const {data, currentStorageKey} = this.state;
+
+        window.localStorage[currentStorageKey] = JSON.stringify(data);
+    }
+
+    completeTask(taskData) {
+        return () => {
             this.setState(prevState => {
                 return {
-                    data: prevState.data.filter(el => el !== taskData)
+                    data: prevState.data.map(el => {
+                        if (el === taskData) {
+                            const newTask = {
+                                ...taskData,
+                                completed: !taskData.completed
+                            };
+
+                            return newTask;
+                        }
+
+                        return el;
+                    })
                 }
             });
+        };
+    }
+
+    deleteTask(taskData) {
+        return () => {
+            this.setState(prevState => {
+                return {
+                    data: prevState.data.filter(el => el.id !== taskData.id)
+                }
+            });
+        };
     }
 
     renderListElement = (data = {}, index) => {
-        const {id, text = ''} = data;
+        const {id, text = '', completed = false} = data,
+            classNames = ['todo__item'];
 
-        return <li key={id || index} className='todo__item'>
-            {text}
+        if (completed) {
+            classNames.push('todo__item--completed');
+        }
+
+        return <li
+            key={id || index}
+            className={classNames.join(' ')}>
+            <span onClick={this.completeTask(data)}>{text}</span>
             <button onClick={this.deleteTask(data)}>Del</button>
         </li>;
     }
