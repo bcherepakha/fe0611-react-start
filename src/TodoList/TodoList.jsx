@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { Button } from 'react-bootstrap';
+
 import './TodoList.css';
 
 // import {Storage} from '../Flux/Storage';
@@ -192,11 +194,18 @@ class TodoList extends React.Component {
     }
 
     render() {
-        const {currentDayKey, data, taskText} = this.state;
+        const {currentDayKey, data, taskText} = this.state,
+            {hide} = this.props;
 
         return <div className="todo">
             <h3 className="todo__banner">
                 {`TODO List ${currentDayKey}`}
+                {hide &&
+                    <Button
+                        bsStyle='danger'
+                        onClick={hide}>
+                        Hide
+                    </Button>}
             </h3>
             <ol className="todo__list">
                 {data.map(this.renderListElement)}

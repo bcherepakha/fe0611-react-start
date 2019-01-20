@@ -3,7 +3,7 @@ import MicroEvent from 'microevent';
 
 const AppStore = new MicroEvent();
 
-AppStore.todoListDay = new Date();
+// AppStore.todoListDay = new Date();
 
 // add Dispatcher
 AppActions.iDispatcher.register(payload => {

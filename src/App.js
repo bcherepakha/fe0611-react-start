@@ -2,6 +2,13 @@ import React, { Component } from 'react';
 
 import Calendar from './Calendar/Calendar.jsx';
 import TodoList from './TodoList/TodoList';
+import FindBeer from './FindBeer/FindBeer';
+import BeerList from './BeerList/BeerList';
+
+import AppStore from './Flux/AppStore';
+import AppActions from './Flux/AppActions';
+
+import {Nav, NavItem, Grid, Row, Col} from 'react-bootstrap';
 
 // import logo from './logo.svg';
 
@@ -34,6 +41,47 @@ function getHolidays(fullYear) {
 
 const HOLIDAYS = getHolidays(2019);
 
+class Content extends Component {
+    state = {
+        selected: 'home',
+        beerName: ''
+    }
+
+    handleSelect = eventKey => {
+        this.setState({
+            selected: eventKey
+        });
+    }
+
+    setBeerName = beerName => this.setState({beerName})
+
+    render() {
+        const {selected, beerName} = this.state;
+
+        return <Col lg={8} sm={6} xs={12} className='content-body'>
+            <Nav bsStyle="pills" activeKey={selected} onSelect={this.handleSelect}>
+              <NavItem eventKey='home' title='home'>
+                NavItem home content
+              </NavItem>
+              <NavItem eventKey='item' title="Item">
+                NavItem Item content
+              </NavItem>
+              <NavItem eventKey='3' title='Item 3'>
+                NavItem 3 content
+              </NavItem>
+            </Nav>
+            <FindBeer submitHandler={this.setBeerName}/>
+            {beerName && <BeerList beerName={beerName}/>}
+        </Col>;
+    }
+}
+
+function Sidebar(props) {
+    return <Col lg={4} sm={6} xs={12} className='component-aside'>
+        {props.children}
+    </Col>;
+}
+
 class App extends Component {
     constructor(props) {
         super(props);
@@ -52,6 +100,24 @@ class App extends Component {
         };
     }
 
+    componentDidMount() {
+        AppStore.bind('change', this.changeTodoListDayInStore);
+    }
+
+    componentWillUnmount() {
+        AppStore.unbind('change', this.changeTodoListDayInStore);
+    }
+
+    changeTodoListDayInStore = () => {
+        this.setState({
+            todoListDay: AppStore.todoListDay
+        });
+    }
+
+    hideTodoList = () => {
+        AppActions.changeTodoListDay(null);
+    }
+
     // changeTodoListDay = day => {
     //     this.setState({
     //         todoListDay: day
@@ -59,16 +125,26 @@ class App extends Component {
     // }
 
     render() {
-        const {currentMonth, currentYear, currentDay} = this.state;
+        const {
+            currentMonth,
+            currentYear,
+            currentDay,
+            todoListDay
+        } = this.state;
 
-        return <React.Fragment>
-            <Calendar
-                holidays={HOLIDAYS}
-                currentDay={currentDay}
-                startMonth={currentMonth}
-                startYear={currentYear}/>
-            <TodoList/>
-        </React.Fragment>;
+        return <Grid>
+            <Row>
+                <Content/>
+                <Sidebar>
+                    <Calendar
+                        holidays={HOLIDAYS}
+                        currentDay={currentDay}
+                        startMonth={currentMonth}
+                        startYear={currentYear}/>
+                </Sidebar>
+            </Row>
+            {todoListDay && <TodoList hide={this.hideTodoList}/>}
+        </Grid>;
     }
 }
 
